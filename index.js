@@ -35,6 +35,7 @@ uranus.position.x = 33;
 neptune.position.x = 36;
 
 scene.add(light);
+
 scene.add(sun);
 scene.add(mercury);
 scene.add(venus);
@@ -63,7 +64,9 @@ function createSphere(radius, textures, ringTextures){
     aoMap: null,
     alphaMap: null,
     specularMap: null,
-    color: 0xffffff
+    color: 0xffffff,
+    bumpScale: 0.05,
+    specular: new THREE.Color('grey')
   };
   let group = new THREE.Group();
   let geometry = new THREE.SphereGeometry(radius, 60, 60);
@@ -74,15 +77,15 @@ function createSphere(radius, textures, ringTextures){
   }
 
   if(ringTextures){
-    let geometry = new THREE.RingGeometry(radius + 0.15, radius + 0.6, 60, 60, 0, Math.PI * 2);
+    let geometry = new _RingGeometry(radius * 1.15, radius * 1.6, 160, 1, 0, Math.PI * 2);
+    console.log(geometry)
     let material = new THREE.MeshPhongMaterial({
       // color: 0xffffff, 
-      // alphaMap: new THREE.TextureLoader().load(ringTextures.alphaMap),
+      alphaMap: new THREE.TextureLoader().load(ringTextures.alphaMap),
       map: new THREE.TextureLoader().load(ringTextures.map),
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      transparent: true
     });
-    // material.map.wrapS = THREE.RepeatWrapping;
-    // material.map.wrapT = THREE.RepeatWrapping;
 
     let ringeMesh = new THREE.Mesh(geometry, material);
     ringeMesh.rotation.x = Math.PI / 2;
@@ -96,5 +99,7 @@ function createSphere(radius, textures, ringTextures){
 
   return group;
 }
+
+
 
 animate();
