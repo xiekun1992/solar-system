@@ -55,7 +55,7 @@ function _RingGeometry( innerRadius, outerRadius, thetaSegments ) {
   }
 
   // this.computeCentroids();
-  // this.computeFaceNormals();
+  this.computeFaceNormals();
 
   this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), outerRadius );
   // this.computeBoundingSphere();
