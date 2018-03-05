@@ -25,7 +25,7 @@ scene.add(light);
 
 // let axesHelper = new THREE.AxesHelper(500);
 // scene.add(axesHelper);
-// scene.add(new THREE.PolarGridHelper(400, 6, 8, 64));
+scene.add(new THREE.PolarGridHelper(400, 6, 8, 64));
 
 
 let solarSystem = {
@@ -130,7 +130,7 @@ function createSphere(radius, materialType, textures, ringTextures, outerTexture
 
 function setSphereData(obj, data){
   for(let o in obj){
-    obj[o].rotation.z = data[o].equatorialInclination * Math.PI * 2 / 360; // 自转倾角
+    obj[o].rotation.z = data[o].equatorialInclination * -Math.PI * 2 / 360; // 自转倾角
   }
 }
 function rotate(obj, data){
