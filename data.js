@@ -107,6 +107,8 @@ for(let d in data){
         case 'equatorialRadius': return target[name] > 100000? target[name] / data.earth.equatorialRadius / 5: target[name] / data.earth.equatorialRadius;
         case 'trackRadius': return target[name] > 0? 20 + target[name] / data.earth.equatorialRadius / 2000: 0; //target[name] / data.earth.trackRadius * 300;
         case 'orbitalInclination': return target[name];
+        case 'semiLongAxis': return target[name] / 100000000 * 60;
+        case 'centrifugationRate': return target[name];
         case 'equatorialInclination': return target[name];
         case 'revolutionPeriod': return target[name] / 100000;
         case 'rotationCycle': return target[name] / data.earth.rotationCycle * 100;

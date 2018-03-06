@@ -23,8 +23,8 @@ scene.add(light);
 // scene.add(light2);
 // scene.add(new THREE.HemisphereLight(0xffffff, 0x080820, 1));
 
-// let axesHelper = new THREE.AxesHelper(500);
-// scene.add(axesHelper);
+let axesHelper = new THREE.AxesHelper(500);
+scene.add(axesHelper);
 scene.add(new THREE.PolarGridHelper(400, 6, 8, 64));
 
 
@@ -43,7 +43,7 @@ setSphereData(solarSystem, DATA);
 for(let o in solarSystem){
   solarSystem[o].arc = 0;
   scene.add(solarSystem[o]);
-  scene.add(addTrack(DATA[o]))
+  // scene.add(addTrack(DATA[o]))
 }
 window.addEventListener('resize', function(){
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -138,22 +138,24 @@ function rotate(obj, data){
     obj[o].rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI * 2 / data[o].rotationCycle); // 自转
     // 公转，使用极坐标方程
     let arc = data[o].revolutionPeriod > 0? Math.PI * 2 / data[o].revolutionPeriod: 0;
-    obj[o].arc += arc;
-    let radius = data[o].trackRadius || 0;
-    obj[o].position.x = radius * Math.sin(obj[o].arc);
-    obj[o].position.z = radius * Math.cos(obj[o].arc);
+    obj[o].arc -= arc;
+    // 计算短半轴
+    let a = data[o].semiLongAxis, e = data[o].centrifugationRate;
+    let b = a * Math.sqrt(1 - e * e);
+    // 计算近心点dp和远心点da
+    let da = a * (e + 1);
+    let dp = a * (1 - e);
+    // 椭圆相对于中心的极坐标形式
+    let r = b / Math.sqrt(1 - e * e * Math.cos(obj[o].arc) * Math.cos(obj[o].arc));
+
+    let radius = r;// data[o].trackRadius || 0;
+    obj[o].position.x = radius * Math.cos(obj[o].arc) + a - dp;
+    obj[o].position.z = radius * Math.sin(obj[o].arc);
     // 公转倾角，使用三角函数
-    obj[o].position.y = obj[o].position.x * Math.tan(Math.PI * 2 / 360 * data[o].orbitalInclination)
+    obj[o].position.y = (obj[o].position.x + a - dp) * Math.tan(Math.PI * 2 / 360 * data[o].orbitalInclination)
   }
 }
 function addTrack(data){
-  // let mesh = new THREE.Mesh(new THREE.RingGeometry(data.trackRadius - 2, data.trackRadius, 100),
-  //                       new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide}));
-  // mesh.rotation.x = -Math.PI / 2;
-  // // 公转倾角
-  // mesh.rotation.y = -Math.PI * 2 / 360 * data.orbitalInclination;
-  // return mesh;
-  // let curve = new THREE.EllipseCurve(0, 0, 10, 10, 0, 2 * Math.PI, false, 0);
   var curve = new THREE.EllipseCurve(
     0,  0,            // ax, aY
     data.trackRadius, data.trackRadius,           // xRadius, yRadius
@@ -172,6 +174,7 @@ function addTrack(data){
   ellipse.rotation.x = -Math.PI / 2;
   // 公转倾角
   ellipse.rotation.y = -Math.PI * 2 / 360 * data.orbitalInclination;
+  // ellipse.rotation.z = Math.PI / 2;
   return ellipse;
 }
 
