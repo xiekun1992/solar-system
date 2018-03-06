@@ -25,7 +25,7 @@ scene.add(light);
 
 let axesHelper = new THREE.AxesHelper(500);
 scene.add(axesHelper);
-scene.add(new THREE.PolarGridHelper(400, 6, 8, 64));
+scene.add(new THREE.PolarGridHelper(1400, 6, 8, 64));
 
 
 let solarSystem = {
@@ -149,10 +149,10 @@ function rotate(obj, data){
     let r = b / Math.sqrt(1 - e * e * Math.cos(obj[o].arc) * Math.cos(obj[o].arc));
 
     let radius = r;// data[o].trackRadius || 0;
-    obj[o].position.x = radius * Math.cos(obj[o].arc) + a - dp;
+    obj[o].position.x = radius * Math.cos(obj[o].arc) - (a - dp);
     obj[o].position.z = radius * Math.sin(obj[o].arc);
     // 公转倾角，使用三角函数
-    obj[o].position.y = (obj[o].position.x + a - dp) * Math.tan(Math.PI * 2 / 360 * data[o].orbitalInclination)
+    obj[o].position.y = (obj[o].position.x - (a - dp)) * Math.tan(Math.PI * 2 / 360 * data[o].orbitalInclination)
   }
 }
 function addTrack(data){
@@ -164,7 +164,7 @@ function addTrack(data){
     0                 // aRotation
   );
 
-  var points = curve.getPoints( 50 );
+  var points = curve.getPoints( 100 );
   var geometry = new THREE.BufferGeometry().setFromPoints( points );
 
   var material = new THREE.LineBasicMaterial( { color : 0xffffff } );
